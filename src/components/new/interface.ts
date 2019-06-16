@@ -20,8 +20,6 @@ export interface IPost{
     hashtags: string,
     image: IImage,
     preview: IPreview
-
-  
   }
 
   export interface IState extends IPost {
@@ -31,11 +29,10 @@ export interface IPost{
   export interface IProps{
      navigation: NavigationScreenProp<NavigationRoute<IParams>, IParams>
   }
-  
+
   export interface IParams {
     otherId: string;
     otherName: string;
     otherPic: string;
     id: string;
   }
-  

@@ -1,11 +1,18 @@
-import React, {Component} from 'react';
-import {TouchableOpacity, StyleSheet, Text, TextInput, View, Image} from 'react-native';
-import {IProps,IState,IParams} from './interface';
-import ImagePicker, {ImagePickerResponse} from 'react-native-image-picker';
+import React, { Component } from 'react';
+import { TouchableOpacity, Text, TextInput, View, Image } from 'react-native';
+import ImagePicker, { ImagePickerResponse } from 'react-native-image-picker';
+import { IProps, IState } from './interface';
 import api from '../../services/api';
+import { styles } from './styles';
 
 
-export default class New extends Component<IProps,IState> {
+export default class New extends Component<IProps, IState> {
+  static navigationOptions = () => ({
+
+    headerTitle: 'Nova Publicação',
+
+  });
+
   state:IState = {
     preview: {} as any,
     image: {} as any,
@@ -16,53 +23,43 @@ export default class New extends Component<IProps,IState> {
 
 };
 
-  static navigationOptions = () => ({
-
-    headerTitle: 'Nova Publicação'
-
-  });
-
   handleSelectImage = () => {
     ImagePicker.showImagePicker({
-      title:'Selecionar Imagem'
-    },(upload:ImagePickerResponse) => {
-      if(upload.error){
+      title: 'Selecionar Imagem',
+    }, (upload:ImagePickerResponse) => {
+      if (upload.error) {
         console.log('Error');
-      } else if (upload.didCancel){
+      } else if (upload.didCancel) {
         console.log('Used Canceled');
       } else {
         const preview = {
-          uri: `data:image/jpeg;base64,${upload.data}`
-        }
+          uri: `data:image/jpeg;base64,${upload.data}`,
+        };
 
         let prefix;
         let ext;
 
-        if (upload.fileName){
-
-          [prefix,ext] = upload.fileName!.split('.');
+        if (upload.fileName) {
+          [prefix, ext] = upload.fileName!.split('.');
           ext = ext.toLocaleLowerCase() === 'heic' ? 'jpg' : ext;
-
         } else {
           prefix = new Date().getTime();
           ext = 'jpg';
         }
 
 
-
-        const  image = {
+        const image = {
           uri: upload.uri,
           type: upload.type,
-          name: `${prefix}.${ext}`
-        }
+          name: `${prefix}.${ext}`,
+        };
 
-        this.setState({preview, image})
+        this.setState({ preview, image });
       }
-    }) 
+    });
   }
 
   handleSubmit = async () => {
-
     const data = new FormData();
 
         data.append('image', this.state.image);
@@ -74,7 +71,6 @@ export default class New extends Component<IProps,IState> {
          await api.post('/api/post/create', data);
 
          this.props.navigation.navigate('Feed');
-
   }
 
     render() {
@@ -83,49 +79,49 @@ export default class New extends Component<IProps,IState> {
 
           <TouchableOpacity style={styles.selectButton} onPress={this.handleSelectImage}>
             <Text style={styles.selectButtonText}>Selecionar Imagem</Text>
-           </TouchableOpacity>
+          </TouchableOpacity>
 
           {this.state.preview && <Image style={styles.preview} source={this.state.preview} />}
 
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize='none'
-            placeholder='Nome do Autor'
-            placeholderTextColor='#999'
+            autoCapitalize="none"
+            placeholder="Nome do Autor"
+            placeholderTextColor="#999"
             value={this.state.author}
-            onChangeText={author => this.setState({author})}
-            />
+            onChangeText={author => this.setState({ author })}
+          />
 
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize='none'
-            placeholder='Local'
-            placeholderTextColor='#999'
+            autoCapitalize="none"
+            placeholder="Local"
+            placeholderTextColor="#999"
             value={this.state.place}
-            onChangeText={place => this.setState({place})}
-            />
+            onChangeText={place => this.setState({ place })}
+          />
 
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize='none'
-            placeholder='Descrição'
-            placeholderTextColor='#999'
+            autoCapitalize="none"
+            placeholder="Descrição"
+            placeholderTextColor="#999"
             value={this.state.description}
-            onChangeText={description => this.setState({description})}
-            />
+            onChangeText={description => this.setState({ description })}
+          />
 
           <TextInput
             style={styles.input}
             autoCorrect={false}
-            autoCapitalize='none'
-            placeholder='Hashtags'
-            placeholderTextColor='#999'
+            autoCapitalize="none"
+            placeholder="Hashtags"
+            placeholderTextColor="#999"
             value={this.state.hashtags}
-            onChangeText={hashtags => this.setState({hashtags})}
-            />  
+            onChangeText={hashtags => this.setState({ hashtags })}
+          />
 
           <TouchableOpacity style={styles.shareButton} onPress={this.handleSubmit}>
             <Text style={styles.shareButtonText}>Compartilhar</Text>
@@ -135,60 +131,3 @@ export default class New extends Component<IProps,IState> {
       );
     }
   }
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingHorizontal: 20,
-      paddingTop: 30,
-    },
-  
-    selectButton: {
-      borderRadius: 4,
-      borderWidth: 1,
-      borderColor: '#CCC',
-      borderStyle: 'dashed',
-      height: 42,
-  
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  
-    selectButtonText: {
-      fontSize: 16,
-      color: '#666',
-    },
-  
-    preview: {
-      width: 100,
-      height: 100,
-      marginTop: 10,
-      alignSelf: 'center',
-      borderRadius: 4,
-    },
-  
-    input: {
-      borderRadius: 4,
-      borderWidth: 1,
-      borderColor: '#ddd',
-      padding: 15,
-      marginTop: 10,
-      fontSize: 16,
-    },
-  
-    shareButton: {
-      backgroundColor: '#7159c1',
-      borderRadius: 4,
-      height: 42,
-      marginTop: 15,
-  
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-  
-    shareButtonText: {
-      fontWeight: 'bold',
-      fontSize: 16,
-      color: '#FFF',
-    },
-  });

@@ -7,9 +7,9 @@ export interface IPost{
     hashtags: string,
     image: string,
     likes?: number
-  
+
   }
-  
+
   export interface IProps {
   //  feed: IPost[];
   }
@@ -23,5 +23,3 @@ export interface IPost{
     otherPic: string;
     id: string;
   }
-  
-  
